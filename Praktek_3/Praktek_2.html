@@ -1,0 +1,49 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praktek JavaScript</title>
+</head>
+<script>
+    function tambah(){
+        var num1 = parseInt(document.kalkulator.T1.value);
+        var num2 = parseInt(document.kalkulator.T2.value);
+        var hasil = num1+num2;
+        document.kalkulator.H1.value = hasil;
+    }
+    function kurang(){
+        var num1 = parseInt(document.kalkulator.T1.value);
+        var num2 = parseInt(document.kalkulator.T2.value);
+        var hasil = num1-num2;
+        document.kalkulator.H1.value = hasil;
+    }
+    function kali(){
+        var num1 = parseInt(document.kalkulator.T1.value);
+        var num2 = parseInt(document.kalkulator.T2.value);
+        var hasil = num1*num2;
+        document.kalkulator.H1.value = hasil;
+    }
+    function bagi(){
+        var num1 = parseInt(document.kalkulator.T1.value);
+        var num2 = parseInt(document.kalkulator.T2.value);
+        var hasil = num1/num2;
+        document.kalkulator.H1.value = hasil;
+    }
+    document.write("Dimodifikasi Terakhir pada "+ document.lastModified);
+</script>
+<body>
+    <form  method="post"  name="kalkulator">
+        <p>BIL 1 <input type="text" name="T1" size="15">
+        <br> BIL 2 <input type="text" name="T2" size="15">
+        </p>
+        <p>
+                <input type="button" name="B1" value="X" onclick=kali()>
+                <input type="button" name="B1" value="/" onclick=bagi()>
+                <input type="button" name="B1" value="-" onclick=kurang()>
+                <input type="button" name="B1" value="+" onclick=tambah()>
+        </p>
+        <br> Hasil <input type="text" name="H1" size="15">
+        </form>
+</body>
+</html>

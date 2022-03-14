@@ -1,0 +1,40 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praktek JavaScript</title>
+</head>
+<script>
+    function konversi() {
+        var angka1=prompt("Masukkan Nilai: ");
+        var hasil="";
+        if (angka1>=0 && angka1<=40) {
+            hasil="E";
+        }
+        if (angka1>=41 && angka1<=55) {
+            hasil="D";
+        }
+        if (angka1>=56 && angka1<=60) {
+            hasil="C";
+        }
+        if (angka1>=61 && angka1<=65) {
+            hasil="BC";
+        }
+        if (angka1>=66 && angka1<=70) {
+            hasil="B";
+        }
+        if (angka1>=71 && angka1<=80) {
+            hasil="AB";
+        }
+        if (angka1>=81 && angka1<=100) {
+            hasil="A";
+        }
+        
+        document.write("Hasil : "+hasil)
+    }
+</script>
+<body>
+    <input type="button" name="btn_konversi" value="Konversi" onclick=konversi()>
+</body>
+</html>
