@@ -1,0 +1,30 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praktikum 4</title>
+    <script type="text/javascript" src="jquery-3.6.0.min.js" ></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".hide").click(function(){
+                $("#gambar").hide("slow");
+            });
+            $(".show").click(function(){
+                $("#gambar").show("slow");
+            });
+        });
+    </script>
+    <style>
+        #gambar{
+            width: 30%;
+        }
+    </style>
+</head>
+<body>
+    <button class="hide">Sembunyi</button>
+    <button class="show">Tampilkan</button>
+    <br>
+    <img id="gambar" src="SmadaNew.png">
+</body>
+</html>

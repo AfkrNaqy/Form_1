@@ -1,0 +1,62 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praktikum 4</title>
+    <script type="text/javascript" src="jquery-3.6.0.min.js" ></script>
+    <script>
+        $(document).ready(function(){
+            $("#box_1").dblclick(function(){
+                $("#box_1").css("background-color","red");
+            });
+            $("#box_2").dblclick(function(){
+                $("#box_2").css("background-color","red");
+            });
+            $("#box_3").dblclick(function(){
+                $("#box_3").css("background-color","red");
+            });
+            $("#box_4").dblclick(function(){
+                $("#box_4").css("background-color","red");
+            });
+        });
+    </script>
+    <style>
+        #box_1{
+            position: absolute;
+            height: 100px;
+            width: 100px;
+            background-color: yellow;
+            margin-left: 20px;
+        }
+        #box_2{
+            position: absolute;
+            height: 100px;
+            width: 100px;
+            background-color: yellow;
+            margin-left: 140px;
+        }
+        #box_3{
+            position: absolute;
+            height: 100px;
+            width: 100px;
+            background-color: yellow;
+            margin-left: 260px;
+        }
+        #box_4{
+            position: absolute;
+            height: 100px;
+            width: 100px;
+            background-color: yellow;
+            margin-left: 380px;
+        }
+    </style>
+</head>
+<body>
+    klik 2x untuk merubah warna kotak <br>
+    <div id="box_1"></div>
+    <div id="box_2"></div>
+    <div id="box_3"></div>
+    <div id="box_4"></div>
+</body>
+</html>
