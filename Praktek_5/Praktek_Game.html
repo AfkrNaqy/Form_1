@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Flappy</title>
+    <style>
+        /* untuk mengatur tampilan dari canvas */
+        canvas{
+            display: block; /*mengatur posisi dari canva*/
+            margin: 0 auto; /*mengatur batas margin antara canva dan  dokumen*/
+        }
+    </style>
+</head>
+<body>
+    <!-- memasukkan canvas ke dalam body -->
+    <canvas id="myCanvas" width="500" height="350"></canvas>
+    <!-- script untuk mengatur tampilan dari canvas -->
+    <script>
+        var cvs=document.getElementById("myCanvas"); //mengambil elemen canvas
+        var ctx = cvs.getContext("2d"); //membuat objek gambar pada canvas
+
+        // deklarasi variabel
+        var bird = new Image();
+        var bg = new Image();
+        var pipeNorth = new Image();
+        var pipeSouth = new Image();
+
+        //memberikan nilai pada setiap variabel dengan memasukkan gambar
+        bird.src = "https://i.ibb.co/sysThPc/bird.png";
+        bg.src = "https://i.ibb.co/wsLwHKV/bg.png";
+        pipeNorth.src = "https://i.ibb.co/pWyF98R/pipe-North.png";
+        pipeSouth.src = "https://i.ibb.co/w7WSMbT/pipe-South.png";
+
+        //deklarasi variabel
+        var gap= 100;
+        var bounce = 4;
+        var constant;
+        var bX = 10;
+        var bY = 150;
+        var gravity = 2.1;
+        var score = 0;
+
+        
+
+        document.addEventListener("keydown", moveUp); //memasukkan event pengatur pada dokumen
+        //function untuk mengatur lompatan bird
+        function moveUp(){
+            bY -= 45;
+        }
+
+        var pipe = [];
+        pipe[0] = {x:cvs.width, y:0};
+
+        //function untuk mengatur keseluruhan animasi game ketika dijalankan
+        function draw(){
+            ctx.drawImage(bg,0,0, cvs.width, cvs.height); //membuat atau memasukkan gambar pada function
+            //perulangan untuk menampilkan pipe
+            for(var i=0; i<pipe.length; i++){
+                constant = pipeNorth.height+gap;
+                ctx.drawImage(pipeNorth,pipe[i].x, pipe[i].y); //membuat atau memasukkan gambar pada function
+                ctx.drawImage(pipeSouth,pipe[i].x, pipe[i].y+constant); //membuat atau memasukkan gambar pada function
+                pipe[i].x--; //perintah untuk menggerakkan pipe memanfaatkan sumbu x
+
+                if (pipe[i].x == 250) {
+                    //memasukkan pipe pada canva
+                    pipe.push({
+                        x: cvs.width, //letak awal pipe muncul
+                        y: Math.floor(Math.random()*pipeNorth.height)-pipeNorth.height //membuat nilai random untuk membarikan nilai atau letak awal dari pipe
+                    });
+
+                }
+
+                if (bX + bird.width >= pipe[i].x && bX <= pipe[i].x + pipeNorth.width && (bY <= pipe[i].y +pipeNorth.height
+                    || bY + bird.height >= pipe[i].y +constant) || bY + bird.height >= cvs.height) {
+                    location.reload(); //perintah untuk reload otomatis ketika kondisi if tersebut terpenuhi
+                }
+
+                //menambahkan nilai pada variabel score
+                if(pipe[i].x == 5 ){
+                    score++;
+                }
+
+            }
+
+            ctx.drawImage(bird,bX,bY); //membuat gambar bird pada canva
+            bY += gravity;
+            ctx.fillStyle = "#000"; //memberikan fill berupa warna
+            ctx.font  = "20px Verdana"; //mengubah font pada canva
+            ctx.fillText("Score : " + score, 10, cvs.height-20); //memasukkan teks pada halaman canva
+            requestAnimationFrame(draw); //memanggil function untuk update animasi sebelum animasi selanjutnya
+        }
+        draw(); //memanggil function draw
+    </script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Game dengan Javascript dan HTML5</title>
+    <style>
+         /* desain dari tampilan dokumen keseluruhan */
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        /* untuk mengatur ukuran dari canvas/tampilan web */
+        canvas{
+            background: #eee; /*mengatur warna background canva*/
+            display: block; /*mengatur posisi dari canva*/
+            margin: 0 auto; /*mengatur batas margin antara canva dan  dokumen*/
+        }
+    </style>
+</head>
+<body>
+    <!-- memasukkan canvas ke dalam body -->
+    <canvas id="myCanvas" width="500" height="350"></canvas>
+    <!-- script untuk mengatur tampilan dari canvas -->
+    <script>
+        // deklarasi variabel
+        var canvas = document.getElementById('myCanvas'); //mengambil elemen canvas
+        var context = canvas.getContext('2d'); //membuat objek gambar pada canvas
+
+        var speed = 10;
+        gameSpeed = 100;
+        //membuat objek yg berperan sebagai bird
+        var bird = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            vx: 0,
+            vy: 1
+        };
+
+        //deklarasi variabel untuk tiang/pip
+        var pip = [];
+
+        var gravity = 0.2;
+        var bounce = 4;
+        var distance = 100;
+        var dir = 'left';
+
+        //berfungsi untuk memberikan animasi ketika klik keyboard
+        document.onkeydown = function(e){
+            if (!e) {
+                e = window.e;
+            }
+            //untuk memberikan perintah keyboard event
+            var code = e.keyCode;
+            if (e.charCode && codee ==0) {
+                code = e.charCode;
+            }
+
+            //menentukan bagian keyboard yang ditekan beserta animasi yang dikeluarkan
+            switch (code) {
+                case 37:
+                    if(dir != 'right')
+                        dir = 'left';
+                    break;
+                case 38: 
+                    if(dir != 'down')
+                        dir = 'up';
+                    break;
+                case 39: 
+                    if(dir != 'left')
+                        dir = 'right';
+                    break;
+                case 40: 
+                    if(dir != 'up')
+                        dir = 'down';
+                    break;
+            
+                default:
+                    break;
+            }
+        }
+
+        var b = 0.8;
+        //function untuk membuat bird serta
+        function makeBird() {
+            context.beginPath(); //memulai pembuatan path
+            context.rect(bird.x, bird.y, 10, 10); //membuat persegi sesuai ukuran dan letak awal
+            context.fillStyle = "red"; //memberikan warna pada path 
+            context.fill(); //menambahkan fill pada path
+            context.closePath(); //berfungsi untuk kembali ke awal pembuatan path/object
+
+            bird.y += bird.vy;
+            bird.vy += gravity;
+            
+            if (dir == 'up') {
+                bird.vy = -bounce;
+                dir = '';
+            }
+
+            if (bird.y + 10 >=canvas.height) {
+                // dir = 'up';
+            }
+        }
+
+        function makePip() {
+            for(p of pip) {
+                context.beginPath(); //memulai pembuatan path
+                context.rect(p.top.x, p.top.y, p.top.width, p.top.height); //membuat persegi sesuai ukuran dan letak awal
+                context.fillStyle = 'blue'; //memberikan warna pada path 
+                context.fill(); //menambahkan fill pada path
+                context.closePath(); //berfungsi untuk kembali ke awal pembuatan path/object
+
+                p.bottom.y = p.top.height + distance;
+                p.bottom.height = (canvas.height - p.bottom.y);
+
+                
+                context.beginPath();//memulai pembuatan path
+                context.rect(p.bottom.x, p.bottom.y, p.bottom.width, p.bottom.height); //membuat persegi sesuai ukuran dan letak awal
+                context.fillStyle = 'red';//memberikan warna pada path
+                context.fill();//menambahkan fill pada path
+                context.closePath();//berfungsi untuk kembali ke awal pembuatan path/object
+
+                p.bottom.x -= 1; //
+                p.top.x -= 1;
+                if (p.top.x < -10) {
+                    pip.shift(); //menghapus elemen pertama pada array dan memunculkan kembali elemen tersebut
+                }
+
+                //perintah untuk mengecek apakah permainan sudah berakhir atau belum
+                if (isCollideB(bird, p.bottom) || isCollideT(bird, p.top) || bird.y + 10 >= canvas.height) {
+                    alert('Your score : ' + score);
+                    window.location.reload(); //mengulang tampilan pada windows
+                }
+
+                //perintah untuk mengatur nilai variabel distance berdasarkan dengan score yang telah didapat
+                if (score % 10 == 0 ) {
+                    console.log(distance);
+                    score += 1;
+                    distance -= 5;
+                }
+
+            }
+        }
+
+        //function untuk menghentikan permainan dengan kondisi yang telah dibuat
+        function isCollideB(b, p){
+            //mengembailkan nilai dari function
+            return (
+                (b.x + 10 > p.x) &&
+                (b.x < p.x + 10) &&
+                (b.y > p.y || b.y + 10 > p.y)
+            );
+        }
+
+        //function untuk menghentikan permainan dengan kondisi yang telah dibuat
+        function isCollideT(b, p){
+            //mengembailkan nilai dari function
+            return(
+                (b.x + 10 > p.x) &&
+                (b.x < p.x + 10) &&
+                (b.y < p.y + p.height)
+            );
+        }
+
+        //function yang berfungsi untuk mengacak nilai
+        function rnd(min, max) {
+            var r = Math.round(Math.random() * (max - min) + min); //perintah untuk mengacak nilain untuk titk awal muncul pip
+            return (r - r % speed); //mengembalikan nilai dari functino rnd
+        }
+        var score = 0;
+        var frame = 0;
+        (function loop() {
+            //memanggil function untuk update animasi sebelum animasi selanjutnya
+            requestAnimationFrame(function () {
+                context.clearRect(0, 0, canvas.width, canvas.height); //menghapus persegi dengan ukuran yang ditentukan
+                if (frame % gameSpeed == 0) {
+                    //memasukkan pip pada variabel pip
+                    pip.push({
+                        //untuk pip pada bagian atas
+                        top :{
+                            x : canvas.width,
+                            y : 0,
+                            height : rnd(70,140),
+                            width : 10,
+                        },
+                        //untuk pip pada bagian bawah
+                        bottom :{
+                            x : canvas.width,
+                            y : 0,
+                            height : rnd(100,160),
+                            width : 10,
+                        }
+                    });
+                    score++; //menambahkan nilai dari variabel score
+                }
+                makeBird(); //memanggil function makeBird
+                makePip(); //memanggil function makePip
+                frame++; //menambahkan nilai dari variabel frame
+                loop(); ///memanggil function dari loop
+            })
+        }) ();
+    </script>
+</body>
+</html>

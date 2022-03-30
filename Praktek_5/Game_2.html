@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+        /* desain dari tampilan dokumen keseluruhan */
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        /* untuk mengatur tampilan dari canvas */
+        canvas{
+            background: #eee; /*mengatur warna background canva*/
+            display: block; /*mengatur posisi dari canva*/
+            margin: 0 auto; /*mengatur batas margin antara canva dan  dokumen*/
+        }
+    </style>
+</head>
+
+<body>
+    <!-- memasukkan canvas ke dalam body -->
+    <canvas id="myCanvas" width="500" height="350"></canvas> 
+    <!-- script untuk mengatur tampilan dari canvas -->
+    <script>
+        // deklarasi variabel
+        var canvas = document.getElementById('myCanvas'); //mengambil elemen canvas
+        var context = canvas.getContext('2d'); //membuat objek gambar pada canvas
+
+        var speed = 10;
+        var gameSpeed = 1;
+
+        //membuat objek yg berperan sebagai player
+        var me = {
+            x: canvas.width / 2 - 5,
+            y: canvas.height / 2 - 5,
+            width: 10,
+            height: 10
+        }
+
+        var bullets = []; 
+        var wallLength = 200;
+        //deklarasi persegi/wall pada sekeliling dari objek
+        var walls = {
+            //walls bagian kiri
+            'left': {
+                x:10,
+                y: canvas.height / 2 - wallLength / 2,
+                width: 10,
+                height: wallLength,
+                'pos': 'left'
+            },
+            //walls bagian kanan
+            'right': {
+                x: canvas.width - 20,
+                y: canvas.height / 2 - wallLength / 2,
+                width: 10,
+                height: wallLength,
+                'pos': 'right'
+            },
+            //walls bagian atas
+            'top': {
+                x: canvas.width / 2 - wallLength,
+                y: 10,
+                width: wallLength * 2,
+                height: 10,
+                'pos': 'top'
+            },
+            //walls bagian bawah
+            'bottom': {
+                x: canvas.width / 2 - wallLength,
+                y: canvas.height - 20,
+                width: wallLength * 2,
+                height: 10,
+                'pos': 'bottom'
+            },
+        };
+
+        var gravity = 0.2;
+        var bounce = 4;
+        var distance = 70;
+        var dir = '';
+
+        //berfungsi untuk memberikan animasi ketika klik keyboard
+        document.onkeyup = function (e){
+            if(!e){
+                e = window.e;
+            }
+            //untuk memberikan perintah keyboard event
+            var code = e.keyCode;
+            if (e.charCode && codee == 0) {
+                code = e.charCode;
+            }
+            //menentukan bagian keyboard yang ditekan beserta animasi yang dikeluarkan
+            switch(code) {
+                case 37: 
+                    if (dir != 'left')
+                        dir = 'left';
+                    bullets.push({
+                        x: me.x,
+                        y: me.y,
+                        width: 10,
+                        height: 10,
+                        dir: dir
+                    });
+                    break;
+                case 40: 
+                    if (dir != 'down')
+                        dir = 'down';
+                    bullets.push({
+                        x: me.x,
+                        y: me.y,
+                        width: 10,
+                        height: 10,
+                        dir: dir
+                    });
+                    break;
+                case 39: 
+                    if (dir != 'right')
+                        dir = 'right';
+                    bullets.push({
+                        x: me.x,
+                        y: me.y,
+                        width: 10,
+                        height: 10,
+                        dir: dir
+                    });
+                    break;
+                case 38: 
+                    if (dir != 'up')
+                        dir = 'up';
+                    bullets.push({
+                        x: me.x,
+                        y: me.y,
+                        width: 10,
+                        height: 10,
+                        dir: dir
+                    });
+                    break;
+            }
+        }
+
+        var wallSpeed = 0.2;
+        var walletBackward = 20;
+        var score = 0;
+        //perintah untuk membuat animasi wall yang ada disekeliling player
+        function makeWalls (){
+            //perulangan untuk menampilkan animasi
+            for (var index in walls){
+                var wall = walls[index];
+                context.beginPath(); //memulai pembuatan path
+                context.rect(wall.x, wall.y, wall.width, wall.height); //membuat persegi sesuai ukuran dan letak awal
+                context.fillStyle = "blue"; //memberikan warna pada path 
+                context.fill (); //menambahkan fill pada path
+                context.closePath (); //berfungsi untuk kembali ke awal pembuatan path/object
+                //kondisi untuk mengatur speed dari walls
+                if(wall.pos == 'left'){
+                    wall.x += wallSpeed; //menambah nilai pada sumbu x setelah menyentuh bullets
+                    if((wall.x + wall.width) >= me.x){
+                        loose();
+                    }
+                }
+
+                if(wall.pos == 'right'){
+                    wall.x -= wallSpeed; //mengurangi nilai pada sumbu x setelah menyentuh bullets
+                    if ((wall.x + wall.width) <= me.x) {
+                        loose();
+                    }
+                }
+
+                if(wall.pos == 'top'){
+                    wall.y += wallSpeed;//menambah nilai pada sumbu y setelah menyentuh bullets
+                    if((wall.y + wall.height) >= me.y){
+                        loose();
+                    }
+                }
+
+                if(wall.pos == 'bottom'){
+                    wall.y -= wallSpeed; //mengurangi nilai pada sumbu y setelah menyentuh bullets
+                    if((wall.y + wall.height) <= me.y){
+                        loose();
+                    }
+                }
+
+                //console.log(walls[wall]);
+            }
+        }
+        //menampilkan pesan ketika permainan berakhir
+        function loose() {
+            alert('You Lose! score : ' + score);
+        }
+        var collid = false;
+        //untuk membuat tembakan yang dikeluarkan untuk menjauhkan dari wall
+        function makeBullet() {
+            //perulangan supaya bullet dapat digunakan selama permainan berlangsung
+            for (bullet of bullets) {
+                context.beginPath(); //membuat path atu object
+                context.rect(bullet.x, bullet.y, bullet.width, bullet.height); //pembuatan object sesuai ukuran dan letak awal
+                context.fillStyle = "red"; //berfungsi untuk mmebuat warna
+                context.fill(); //menambahkan fill pada path 
+                context.closePath(); //berfungsi untuk kembali ke awal pembuatan path/object
+                if (bullet.dir == 'left') {
+                    bullet.x -=10;
+                }
+                if (bullet.dir == 'right') {
+                    bullet.x +=10;
+                }
+                if (bullet.dir == 'up') {
+                    bullet.y -=10;
+                }
+                if (bullet.dir == 'down') {
+                    bullet.y +=10;
+                }
+
+                //kondisi untuk animasi bullet ketika menyentuh walls
+                if(bullet.x >= canvas.width || bullet.x <= 0 || bullet.y >= canvas.height || bullet.y <= 0) {
+                    bullets.splice(bullets.indexOf(bullet), 1); //perintah untuk menghapus bullet atau object
+                }
+
+                //kondisi untuk efek animasi ketika bullet menyentuh walls (kanan)
+                if (bullet.dir == 'right') {
+                    if (bullet.x >= walls['right'].x) {
+                        walls['right'].x = walls['right'].x + walletBackward;
+                        collid = true;
+                    }
+                }
+                //kondisi untuk efek animasi ketika bullet menyentuh walls (atas)
+                if (bullet.dir == 'up') {
+                    if (bullet.y <= walls['top'].y) {
+                        walls['top'].y = walls['top'].y - walletBackward;
+                        collid = true;
+                    }
+                }
+                //kondisi untuk efek animasi ketika bullet menyentuh walls (bawah)
+                if (bullet.dir == 'down') {
+                    if (bullet.y >= walls['bottom'].y) {
+                        walls['bottom'].y = walls['bottom'].y + walletBackward;
+                        collid = true;
+                    }
+                }
+                //kondisi untuk efek animasi ketika bullet menyentuh walls (kiri)
+                if (bullet.dir == 'left') {
+                    if (bullet.x <= walls['left'].x) {
+                        walls['left'].x = walls['left'].x - walletBackward;
+                        collid = true;
+                    }
+                }
+
+                //digunakan untuk menambah score pada permainan ketika bullet berhasil menyentuh walls
+                if (collid) {
+                    bullets.splice(bullets.indexOf(bullet), 1);
+                    collid = false;
+                    score++;
+                }
+            }
+        }
+
+        //function untuk menghapus bullet
+        function removeBullet(index) {
+            bullets.splice(index, 1); //perintah untuk menghapus bullet
+        }
+
+        //function untuk membuat player atau object untuk mengeluarkan bullet
+        function makeMe() {
+            context.beginPath();
+            context.rect(me.x, me.y, me.width, me.height); //membuat object sesuai ukuran dan letak awal
+            context.fillStyle = "green"; //memberikan warna pada path
+            context.fill(); //menambahkan fill terhadap path yang dibuat
+            context.closePath(); //berfungsi untuk kembali ke awal pembuatan path/object
+        }
+
+        function rnd(min, max){
+            var r = Math.round(Math.random() * (max - min) + min);
+            return (r - r % speed);
+        }
+        var wallPoses = ['left', 'right', 'top', 'bottom'];
+        var frame = 0;
+
+        //berfungsi untuk mengulang animasi dari permainan
+        (function loop() {
+            //memanggil function untuk update animasi sebelum animasi selanjutnya
+            requestAnimationFrame(function () {
+                context.clearRect(0, 0, canvas.width, canvas.height); //menghapus persegi dengan ukuran yang ditentukan
+                makeMe(); //memanggil function makeMe
+                makeBullet(); //memanggil function membuat bullet
+                makeWalls(); //memanggil funtion untuk membuat walls
+                //kondisi untukm mengatur score wallspeed dan animasi lainnya pada canvas
+                if(score % 50 == 0){
+                    walletBackward -= 1; //mengurangi 1 setiap bullet mengenai wall
+                    wallSpeed += 0.1; //menambah 0.1 pada kecepatan wall
+                    score += 1; //menambah score
+                    console.log(score); //untuk mengembalikan nilai melalui console dari browser
+                    console.log(wallSpeed); //untuk mengembalikan nilai melalui console dari browser
+                    console.log(walletBackward); //untuk mengembalikan nilai melalui console dari browser
+                }
+
+                if(frame % gameSpeed == 0){
+                    frame++;
+                }
+                loop();//memanggil method loop
+            })
+        })();
+    </script>
+</body>
+</html>
